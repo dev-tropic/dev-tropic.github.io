@@ -1,0 +1,10 @@
+/* Stylesheet prototype */
+h1{
+  color: rgb(51, 1, 1);
+  background-color: lightgray;
+}
+
+
+div{
+    text-align:right;
+}
