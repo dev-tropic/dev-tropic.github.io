@@ -1,10 +1,32 @@
-/* Stylesheet prototype */
+body{
+    background-color: aquamarine;
+    color:rgb(0, 0, 70);
+}
+
+
 h1{
-  color: rgb(51, 1, 1);
-  background-color: lightgray;
+    background-color: coral;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 
-div{
-    text-align:right;
+.readme-SVG{
+    width:100%;
+    height:100%;
 }
+
+
+a,footer{
+    color:rgb(0, 0, 70);
+    background-color:coral;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5pt;
+    margin-bottom: auto;
+}
+
