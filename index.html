@@ -9,12 +9,36 @@
     </head>
 
     <body>
-        <main>
-            <h1>Welcome to DEV-TROPIC</h1>
-            <object data="README.svg" type="image/svg+xml" class="readme-SVG"></object>
-            <footer class="readme-SVG">
-                <a href="https://github.com/dev-tropic/dev-tropic.github.io">DEV-TROPIC source code</a>
-            </footer>
-        </main>
+        <h1>Welcome to DEV-TROPIC</h1>
+        <!-- <a id="downloadLink" href="#" download="myFile.txt">Download</a> -->
+        <br/>
+        <form><fieldset id="dashboard">
+            <legend>JSON Plotter Dashboard</legend>
+            <table>
+                <tr>
+                    <!-- <td align="left"><input type="radio" id="" name="switch"></td> -->
+                    <td align="left"><label for="remote-read">Read data from remote URL: </label></td>
+                    <td align="left"><input type="url" id="remote-read" name="remote_read" placeholder="https://get.geojs.io/v1/ip/country.json"/></td>
+                </tr>
+                <tr>
+                    <!-- <td align="left"><input type="radio" id="" name="switch"></td> -->
+                    <td align="left"><label for="local-read">Read data from local FILE: </label></td>
+                    <td align="left"><input type="file" id="local-read" name="local_write"/></td>
+                </tr>
+                <tr>
+                    <!-- <td align="left"><input type="radio" id="" name="switch"></td> -->
+                    <td align="left"><label for="local-write">Write data to local DOWNLOADS: </label></td>
+                    <td align="left"><input type="text" id="local-write" name="local_write"/></td>
+                </tr>
+            </table>
+                <br/><br/>
+                <label for="eventLog" >The data: </label>
+                <textarea id="textView"></textarea>
+        </fieldset></form>
+
+        <object data="README.svg" type="image/svg+xml" class="readme-SVG"></object>
+        <footer class="readme-SVG">
+            <a href="https://github.com/dev-tropic/dev-tropic.github.io">DEV-TROPIC source code</a>
+        </footer>
     </body>
 </html>
