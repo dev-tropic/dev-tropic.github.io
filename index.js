@@ -1,9 +1,18 @@
-/* Javascript prototype */
+/*
+Placeholder for data object in the documet context
+*/
+let data;
+
+
+
+/*
+Listen for html events in the document context after the DOM content is loaded 
+*/
 document.addEventListener("DOMContentLoaded", function(){
     console.log("DOM content has loaded");
-    document.getElementById('remote-read').addEventListener('change', (event)=>remoteRead(event.target.value));
-    document.getElementById('local-read').addEventListener('change', (event)=>localRead(event.target.files[0]));
-    document.getElementById('local-write').addEventListener('change', (event)=>localWrite(event.target.value));
+    document.getElementById('remote-read').addEventListener('change', (event)=>readRemote(event.target.value));
+    document.getElementById('local-read').addEventListener('change', (event)=>readLocal(event.target.files[0]));
+    document.getElementById('local-write').addEventListener('change', (event)=>writeLocal(event.target.value));
 });
 
 
@@ -12,35 +21,32 @@ document.addEventListener("DOMContentLoaded", function(){
 /*
 Read data to a web-browser from remote URL: ex. https://get.geojs.io/v1/ip/country.json
 */
-async function remoteRead(URL){
+async function readRemote(URL){
     console.log(URL);
-    let produce;
     try{
-        produce = await fetch(URL)
-                       .then((response)=>response.json())
-                       .then((json)=>JSON.stringify(json));
-        console.log(produce);
+        data = await fetch(URL).then((response)=>response.json())
+        console.log(data);
     }catch(e){
-        produce = e.message;
-        console.warn(produce);
+        console.warn(e.message);
     }finally{
-        document.getElementById('textView').textContent = produce;
+        plotData(data);
     }
 
 }
 
 
+
+
 /*
 Read data to a web-browser from local FILE: 
 */
-async function localRead(file){
+async function readLocal(file){
     console.log(file);
-    let produce;
     try{
-        produce = await new Promise(
+        data = await new Promise(
             (pass, fail)=>{
                 const reader = new FileReader();
-                reader.onload = ()=>pass(reader.result);
+                reader.onload = ()=>pass(JSON.parse(reader.result));
                 reader.onerror = ()=>{
                     reader.abort();
                     fail(new DOMException("File read error."));
@@ -48,12 +54,11 @@ async function localRead(file){
                 reader.readAsText(file);
             }
         );
-        console.log(produce)
+        console.log(data)
     }catch(e){
-        produce = e.message
-        console.warn(produce);
+        console.warn(e.message);
     }finally{
-        document.getElementById('textView').textContent = produce;
+        plotData(data);
     }
 
 }
@@ -63,7 +68,7 @@ async function localRead(file){
 /*
 Write data from a web-browser to local DOWNLOAD: ~/Downloads
 */
-function localWrite(name='file.txt',
+function writeLocal(name='file.txt',
                     content=document.getElementById('textView').textContent){
     console.log(name);
     const a = document.createElement("a");
@@ -72,6 +77,33 @@ function localWrite(name='file.txt',
     a.download = name;
     a.text = 'blob'
     a.click(); 
+}
+
+
+
+/*
+Plot data using each of the selected methods 
+*/
+function plotData(data){
+    document.getElementById('textView').textContent = JSON.stringify(data);
+    traverseData(data);
+}
+
+
+
+
+/*
+Recursively traverse object=obj 
+*/
+function traverseData(data){
+    for (let item in data) {
+        if (!!data[item] && typeof(data[item])=="object") {
+            // console.log(item, data[item]);
+            traverseData(data[item]);
+        } else {
+            console.log(`DATA Traverse Plot: ${item} ${data[item]}`);
+        }
+    }
 }
 
 
