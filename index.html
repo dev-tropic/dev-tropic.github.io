@@ -2,18 +2,23 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="./index.css" rel="stylesheet">
         <script src="./index.js" defer></script>
         <title>DEV-TROPIC</title>
     </head>
 
     <body>
-        <h1>Welcome to DEV-TROPIC</h1>
-        <!-- <a id="downloadLink" href="#" download="myFile.txt">Download</a> -->
+        <h1>DEV-TROPIC</h1>
+        <nav>
+            <a href="https://dev-tropic.github.io" class="nav-link">Home</a>
+            <a href="https://dev-tropic.github.io" class="nav-link">Blog</a>
+            <a href="https://github.com/dev-tropic/dev-tropic.github.io" class="nav-link">Github</a>
+        </nav>
+
         <br/>
         <form><fieldset id="dashboard">
-            <legend>JSON Plotter Dashboard</legend>
+            <legend>Dashboard</legend>
             <table>
                 <tr>
                     <!-- <td align="left"><input type="radio" id="" name="switch"></td> -->
@@ -31,14 +36,14 @@
                     <td align="left"><input type="text" id="local-write" name="local_write"/></td>
                 </tr>
             </table>
-                <br/><br/>
-                <label for="eventLog" >DATA Text Plot: </label>
-                <textarea id="textView"></textarea>
+            <br/><br/>
+            <label for="eventLog" >DATA Text Plot: </label>
+            <textarea id="textView"></textarea>
         </fieldset></form>
 
-        <object data="README.svg" type="image/svg+xml" class="readme-SVG"></object>
-        <footer class="readme-SVG">
-            <a href="https://github.com/dev-tropic/dev-tropic.github.io">DEV-TROPIC source code</a>
-        </footer>
+        <br/>
+        <fieldset id="dashboard"><legend>SVG</legend>
+            <object data="README.svg" type="image/svg+xml" class="SVG"></object>
+        </fieldset>
     </body>
 </html>
