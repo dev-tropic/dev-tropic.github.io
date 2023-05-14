@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg">
   <foreignObject width="100%" height="100%">
     <section id="XMLNS" xmlns="http://www.w3.org/1999/xhtml">
-        <section id="HTML-content" style="color: rgb(0, 0, 70);">
-            <h3>JSON plotter:</h3>
+        <section id="HTML-content" style="color: rgb(100, 100, 100);">
+            <!-- <h3>JSON plotter:</h3> -->
             <ol>
                 <li>CREATES an .SVG plot of imported .JSON data</li>
                 <li>IMPORTS a .JSON data from a local file or a remote API</li>
