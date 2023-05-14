@@ -1,11 +1,43 @@
 body{
-    background-color: aquamarine;
-    color:rgb(0, 0, 70);
+    --body-fill: aquamarine;
+    --body-item: rgb(0, 0, 80);
+    background-color: var(--body-fill);
+    color: var(--body-item);
+    font-family: 'Candara';
+    font-size: 18px;
+    
+    --nav-width: 100px;
+    margin: 0 0 0 var(--nav-width);
 }
 
 
-h1{
-    background-color: coral;
+nav{
+    --nav-fill: coral;
+    background: var(--nav-fill);
+    
+    width: var(--nav-width);
+    top: 0;
+    left: 0;
+    position: fixed;
+    height: 100vh;
+}
+
+
+.nav-link {
+    display: block;
+    padding: 10px 10px;
+    text-decoration: none;
+    /* color: #eeeeee; */
+}
+
+
+.nav-link:hover {
+    background: var(--body-fill);
+}
+
+
+h1,a{
+    color:var(--body-item);
     text-align: center;
     margin-left: auto;
     margin-right: auto;
@@ -14,19 +46,12 @@ h1{
 }
 
 
-.readme-SVG{
+.SVG{
     width:100%;
     height:100%;
 }
 
 
-a,footer{
-    color:rgb(0, 0, 70);
-    background-color:coral;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 5pt;
-    margin-bottom: auto;
+legend{
+    font-weight: bolder;
 }
-
