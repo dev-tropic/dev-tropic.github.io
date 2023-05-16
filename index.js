@@ -13,6 +13,10 @@ document.addEventListener("DOMContentLoaded", function(){
     document.getElementById('remote-read').addEventListener('change', (event)=>readRemote(event.target.value));
     document.getElementById('local-read').addEventListener('change', (event)=>readLocal(event.target.files[0]));
     document.getElementById('local-write').addEventListener('change', (event)=>writeLocal(event.target.value));
+
+    document.getElementById('textview-plot').addEventListener('change', (event)=>checkPlot(event,"textView"));
+    document.getElementById('outline-plot').addEventListener('change', (event)=>checkPlot(event,"outline"));
+    document.getElementById('SVG-plot').addEventListener('change', (event)=>checkPlot(event,"SVG"));
 });
 
 
@@ -81,12 +85,39 @@ function writeLocal(name='file.txt',
 
 
 
+function checkPlot(event,plotID){
+    let checked = event.target.checked;
+    if(checked){
+        document.getElementById(plotID).hidden = false;
+        // document.getElementById(plotID).style.visibility = 'visible'
+        // document.getElementById(plotID).removeAttribute("hidden")
+        // document.getElementById(plotID).style.display = 'block';
+        // document.getElementById(plotID).style.display = 'inline';
+    }else{
+        document.getElementById(plotID).hidden = true;
+        // document.getElementById(plotID).setAttribute("hidden","");
+        // document.getElementById(plotID).style.visibility = 'hidden'
+        // document.getElementById(plotID).style.display = 'none';
+    }
+}
+
+
+
 /*
 Plot data using each of the selected methods 
 */
-function plotData(data){
-    // document.getElementById('textView').textContent = JSON.stringify(data);
-    traverseData(data);
+function plotData(data, plot=undefined){
+    plot = document.getElementById('textView');
+    if(!plot.hidden){
+        plot.innerHTML = '';
+        plot.textContent = JSON.stringify(data);
+    }
+    
+    plot = document.getElementById('outline');
+    if(!plot.hidden){
+        plot.innerHTML = '';
+        traverseData(data);
+    }
 }
 
 
@@ -95,18 +126,18 @@ function plotData(data){
 /*
 Recursively traverse object=data
 */
-function traverseData(data, level=0, path='outline'){
+function traverseData(data, level=0, ID='outline'){
     for(let item in data) {
-        let root = document.getElementById(path);
+        let root = document.getElementById(ID);
         let li = document.createElement('li');
         li.innerHTML = item;
         root.appendChild(li);
         if (!!data[item] && typeof(data[item])=="object") {
-            let new_path = `${path}/${item}`;
+            let new_ID = `${ID}/${item}`;
             let ul = document.createElement('ul');
-            ul.id = new_path;
+            ul.id = new_ID;
             root.appendChild(ul);
-            traverseData(data[item], level+1, new_path);
+            traverseData(data[item], level+1, new_ID);
         }
     }
 }
