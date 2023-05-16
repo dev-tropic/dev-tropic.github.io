@@ -85,7 +85,7 @@ function writeLocal(name='file.txt',
 Plot data using each of the selected methods 
 */
 function plotData(data){
-    document.getElementById('textView').textContent = JSON.stringify(data);
+    // document.getElementById('textView').textContent = JSON.stringify(data);
     traverseData(data);
 }
 
@@ -93,18 +93,21 @@ function plotData(data){
 
 
 /*
-Recursively traverse object=obj 
+Recursively traverse object=data
 */
-function traverseData(data){
-    for (let item in data) {
+function traverseData(data, level=0, path='outline'){
+    for(let item in data) {
+        let root = document.getElementById(path);
+        let li = document.createElement('li');
+        li.innerHTML = item;
+        root.appendChild(li);
         if (!!data[item] && typeof(data[item])=="object") {
-            // console.log(item, data[item]);
-            traverseData(data[item]);
-        } else {
-            console.log(`DATA Traverse Plot: ${item} ${data[item]}`);
+            let new_path = `${path}/${item}`;
+            let ul = document.createElement('ul');
+            ul.id = new_path;
+            root.appendChild(ul);
+            traverseData(data[item], level+1, new_path);
         }
     }
 }
-
-
 
