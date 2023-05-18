@@ -126,18 +126,18 @@ function plotData(data, plot=undefined){
 /*
 Recursively traverse object=data
 */
-function traverseData(data, level=0, ID='outline'){
+function traverseData(data, depth=0, ID='outline'){
     for(let item in data) {
         let root = document.getElementById(ID);
         let li = document.createElement('li');
-        li.innerHTML = item;
+        li.innerHTML = `NODE: depth=${depth} name=${item} type=(${typeof data[item]}) value=${data[item]}`;
         root.appendChild(li);
         if (!!data[item] && typeof(data[item])=="object") {
             let new_ID = `${ID}/${item}`;
             let ul = document.createElement('ul');
             ul.id = new_ID;
             root.appendChild(ul);
-            traverseData(data[item], level+1, new_ID);
+            traverseData(data[item], depth+1, new_ID);
         }
     }
 }
