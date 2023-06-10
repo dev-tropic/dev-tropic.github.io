@@ -1,7 +1,8 @@
 /*
-Placeholder for data object in the documet context
+Placeholder for data object in the document context
 */
 let data;
+
 
 
 
@@ -116,7 +117,7 @@ function plotData(data, plot=undefined){
     plot = document.getElementById('outline');
     if(!plot.hidden){
         plot.innerHTML = '';
-        traverseData(data);
+        new Traverse(data);
     }
 }
 
@@ -142,3 +143,35 @@ function traverseData(data, depth=0, ID='outline'){
     }
 }
 
+
+
+
+
+/*
+Recursively traverse object and record attributes
+*/
+class Traverse{
+    
+    constructor(data=undefined){
+        this.records = [];
+        this.edges = this.traverse(data);
+        console.log(this.records);
+        console.log(this.edges);
+    }
+
+    traverse(data=[], depth=0, edges=[]){
+        for (let key in data){
+            let value = data[key]
+            let node = this.records.length
+            let record = {'NODE': node
+                         ,'KEY': key
+                         ,'TYPE': (typeof value)
+                         ,'DEPTH': depth
+                        }
+            this.records.push(record)
+            edges.push(record)
+            record.VALUE = (record.TYPE==='object') ? this.traverse(value,depth+1) : value
+        }
+        return edges;
+    }
+}
