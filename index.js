@@ -10,14 +10,18 @@ let data;
 Listen for html events in the document context after the DOM content is loaded 
 */
 document.addEventListener("DOMContentLoaded", function(){
-    console.log("DOM content has loaded");
-    document.getElementById('remote-read').addEventListener('change', (event)=>readRemote(event.target.value));
-    document.getElementById('local-read').addEventListener('change', (event)=>readLocal(event.target.files[0]));
-    document.getElementById('local-write').addEventListener('change', (event)=>writeLocal(event.target.value));
+    document.getElementById('container').reset()
+
+    const update = document.getElementById('update-button');
+    update.mode = (method,ID)=>{ update.method=method; update.element=document.getElementById(ID); }
+    update.addEventListener('click', ()=>update.method(update.element));
+
+    document.getElementById('remote-read-radio').addEventListener('click', ()=>update.mode(readRemote, 'remote-read'));
+    document.getElementById('local-read-radio').addEventListener('click', ()=>update.mode(readLocal,'local-read'));
+    document.getElementById('local-write-radio').addEventListener('click', ()=>update.mode(writeLocal,'local-write'));
 
     document.getElementById('textview-plot').addEventListener('change', (event)=>checkPlot(event,"textView"));
-    document.getElementById('outline-plot').addEventListener('change', (event)=>checkPlot(event,"outline"));
-    document.getElementById('SVG-plot').addEventListener('change', (event)=>checkPlot(event,"SVG"));
+    document.getElementById('table-plot').addEventListener('change', (event)=>checkPlot(event,"table"));
 });
 
 
@@ -26,8 +30,9 @@ document.addEventListener("DOMContentLoaded", function(){
 /*
 Read data to a web-browser from remote URL: ex. https://get.geojs.io/v1/ip/country.json
 */
-async function readRemote(URL){
-    console.log(URL);
+const readRemote = async (element)=>{
+    let URL = element.value
+    // console.log(URL);
     try{
         data = await fetch(URL).then((response)=>response.json())
         console.log(data);
@@ -43,10 +48,10 @@ async function readRemote(URL){
 
 
 /*
-Read data to a web-browser from local FILE: 
+Read data to a web-browser from local file
 */
-async function readLocal(file){
-    console.log(file);
+const readLocal = async (element)=>{
+    let file = element.files[0]
     try{
         data = await new Promise(
             (pass, fail)=>{
@@ -59,7 +64,6 @@ async function readLocal(file){
                 reader.readAsText(file);
             }
         );
-        console.log(data)
     }catch(e){
         console.warn(e.message);
     }finally{
@@ -70,12 +74,12 @@ async function readLocal(file){
 
 
 
+
 /*
-Write data from a web-browser to local DOWNLOAD: ~/Downloads
+Write the current content from the document 'textView' to a local DOWNLOAD directory: ~/Downloads
 */
-function writeLocal(name='file.txt',
-                    content=document.getElementById('textView').textContent){
-    console.log(name);
+const writeLocal = (name='file.txt',
+                    content=document.getElementById('textView').textContent)=>{
     const a = document.createElement("a");
     const blob = new Blob([content], {type: "text/plain;charset=utf-8"});
     a.href = window.URL.createObjectURL(blob);
@@ -86,38 +90,31 @@ function writeLocal(name='file.txt',
 
 
 
-function checkPlot(event,plotID){
-    let checked = event.target.checked;
-    if(checked){
-        document.getElementById(plotID).hidden = false;
-        // document.getElementById(plotID).style.visibility = 'visible'
-        // document.getElementById(plotID).removeAttribute("hidden")
-        // document.getElementById(plotID).style.display = 'block';
-        // document.getElementById(plotID).style.display = 'inline';
-    }else{
-        document.getElementById(plotID).hidden = true;
-        // document.getElementById(plotID).setAttribute("hidden","");
-        // document.getElementById(plotID).style.visibility = 'hidden'
-        // document.getElementById(plotID).style.display = 'none';
-    }
+
+/*
+Toggle plot visibility based on checked state of bound legend element
+*/
+const checkPlot = (event, ID)=>{
+    document.getElementById(ID).hidden = (event.target.checked) ? false : true;
 }
 
 
 
+
 /*
-Plot data using each of the selected methods 
+Plot data in each of the !hidden containers 
 */
-function plotData(data, plot=undefined){
+const plotData = (data)=>{
     plot = document.getElementById('textView');
     if(!plot.hidden){
         plot.innerHTML = '';
         plot.textContent = JSON.stringify(data);
     }
     
-    plot = document.getElementById('outline');
+    plot = document.getElementById('table');
     if(!plot.hidden){
         plot.innerHTML = '';
-        new Traverse(data);
+        table(data,'table');
     }
 }
 
@@ -125,24 +122,13 @@ function plotData(data, plot=undefined){
 
 
 /*
-Recursively traverse object=data
+Plot a table view of data attributes in the container 'table'
 */
-function traverseData(data, depth=0, ID='outline'){
-    for(let item in data) {
-        let root = document.getElementById(ID);
-        let li = document.createElement('li');
-        li.innerHTML = `NODE: depth=${depth} name=${item} type=(${typeof data[item]}) value=${data[item]}`;
-        root.appendChild(li);
-        if (!!data[item] && typeof(data[item])=="object") {
-            let new_ID = `${ID}/${item}`;
-            let ul = document.createElement('ul');
-            ul.id = new_ID;
-            root.appendChild(ul);
-            traverseData(data[item], depth+1, new_ID);
-        }
-    }
+const table = (data, ID='table')=>{
+    new Traverse(data);
+    const container = document.getElementById(ID);
+    container.innerText = 'See the Table plot in the browser console (CTRL+SHIFT+I)'
 }
-
 
 
 
@@ -155,23 +141,26 @@ class Traverse{
     constructor(data=undefined){
         this.records = [];
         this.edges = this.traverse(data);
-        console.log(this.records);
-        console.log(this.edges);
+        console.log('ALL NODES'); console.table(this.records);
+        console.log('ROOT NODES'); console.table(this.edges);
     }
 
     traverse(data=[], depth=0, edges=[]){
-        for (let key in data){
-            let value = data[key]
-            let node = this.records.length
+        for(let key in data){
+            let value = data[key];
+            let node = this.records.length;
             let record = {'NODE': node
                          ,'KEY': key
                          ,'TYPE': (typeof value)
                          ,'DEPTH': depth
                         }
-            this.records.push(record)
-            edges.push(record)
-            record.VALUE = (record.TYPE==='object') ? this.traverse(value,depth+1) : value
+            this.records.push(record);
+            edges.push(record);
+            record.VALUE = (record.TYPE==='object') ? this.traverse(value,depth+1) : value;
         }
         return edges;
     }
 }
+
+
+
