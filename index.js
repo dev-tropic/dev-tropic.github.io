@@ -6,36 +6,51 @@ let data;
 
 
 
+class Task{
+
+    constructor(ID='task-button'){
+        this.site = document.getElementById(ID);
+        this.site.addEventListener('click', ()=>this.activity(this.ID));
+    }
+
+    update(activity, ID){
+        this.activity = activity;
+        this.ID = ID;
+        this.site.value = `${this.activity.name}()`
+    }
+}
+
+
+
+
 /*
 Listen for html events in the document context after the DOM content is loaded 
 */
 document.addEventListener("DOMContentLoaded", function(){
     document.getElementById('container').reset()
+    const task = new Task('task-button');
 
-    const update = document.getElementById('update-button');
-    update.mode = (method,ID)=>{ update.method=method; update.element=document.getElementById(ID); }
-    update.addEventListener('click', ()=>update.method(update.element));
+    console.log( document.getElementById('local-read') )
+    
+    document.getElementById('local-read-radio').addEventListener('click', ()=>task.update(readLocal, 'local-read'));
+    document.getElementById('remote-read-radio').addEventListener('click', ()=>task.update(readRemote, 'remote-read'));
+    document.getElementById('textarea-write-radio').addEventListener('click', ()=>task.update(saveFrom_textarea, 'textarea'));
+    document.getElementById('local-write-radio').addEventListener('click', ()=>task.update(saveFrom_data, data));
 
-    document.getElementById('remote-read-radio').addEventListener('click', ()=>update.mode(readRemote, 'remote-read'));
-    document.getElementById('local-read-radio').addEventListener('click', ()=>update.mode(readLocal,'local-read'));
-    document.getElementById('local-write-radio').addEventListener('click', ()=>update.mode(writeLocal,'local-write'));
-
-    document.getElementById('textview-plot').addEventListener('change', (event)=>checkPlot(event,"textView"));
-    document.getElementById('table-plot').addEventListener('change', (event)=>checkPlot(event,"table"));
+    document.getElementById('textarea-checkbox').addEventListener('change', (event)=>checkPlot(event,"textarea"));
+    document.getElementById('table-checkbox').addEventListener('change', (event)=>checkPlot(event,"table"));
 });
 
 
 
 
 /*
-Read data to a web-browser from remote URL: ex. https://get.geojs.io/v1/ip/country.json
+Read data and plot data from a remote URL: ex. https://get.geojs.io/v1/ip/country.json
 */
-const readRemote = async (element)=>{
-    let URL = element.value
-    // console.log(URL);
+const readRemote = async (ID)=>{
+    const URL =  document.getElementById(ID).value;
     try{
         data = await fetch(URL).then((response)=>response.json())
-        console.log(data);
     }catch(e){
         console.warn(e.message);
     }finally{
@@ -48,10 +63,10 @@ const readRemote = async (element)=>{
 
 
 /*
-Read data to a web-browser from local file
+Read and plot data from a local file 
 */
-const readLocal = async (element)=>{
-    let file = element.files[0]
+const readLocal = async (ID)=>{
+    const file = document.getElementById(ID).files[0];
     try{
         data = await new Promise(
             (pass, fail)=>{
@@ -74,16 +89,35 @@ const readLocal = async (element)=>{
 
 
 
+/*
+Get the current content from the 'textarea' element and write it locally
+*/
+const saveFrom_textarea = (ID)=>{
+    const text = document.getElementById(ID).value;
+    writeLocal(text);
+}
+
+
+
 
 /*
-Write the current content from the document 'textView' to a local DOWNLOAD directory: ~/Downloads
+Stringify the current data and write it locally
 */
-const writeLocal = (name='file.txt',
-                    content=document.getElementById('textView').textContent)=>{
+const saveFrom_data = (data)=>{
+    const json = JSON.stringify(data);
+    writeLocal(json);
+}
+
+
+
+/*
+Write the current content to a local DOWNLOAD directory: ~/Downloads
+*/
+const writeLocal = (content)=>{
     const a = document.createElement("a");
     const blob = new Blob([content], {type: "text/plain;charset=utf-8"});
     a.href = window.URL.createObjectURL(blob);
-    a.download = name;
+    a.download = 'file.txt';
     a.text = 'blob'
     a.click(); 
 }
@@ -105,10 +139,10 @@ const checkPlot = (event, ID)=>{
 Plot data in each of the !hidden containers 
 */
 const plotData = (data)=>{
-    plot = document.getElementById('textView');
+    plot = document.getElementById('textarea');
     if(!plot.hidden){
         plot.innerHTML = '';
-        plot.textContent = JSON.stringify(data);
+        plot.value = JSON.stringify(data);
     }
     
     plot = document.getElementById('table');
@@ -122,12 +156,12 @@ const plotData = (data)=>{
 
 
 /*
-Plot a table view of data attributes in the container 'table'
+Plot a table view of data attributes in the 'table' container
 */
 const table = (data, ID='table')=>{
     new Traverse(data);
     const container = document.getElementById(ID);
-    container.innerText = 'See the Table plot in the browser console (CTRL+SHIFT+I)'
+    container.innerText = 'See the browser console (F12, CTRL+SHIFT+I, CTRL+SHIFT+K)'
 }
 
 
