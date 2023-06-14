@@ -18,40 +18,43 @@
 
         <br/>
         <form id="container"><fieldset id="dashboard">
-            <legend align="left"><input type="button" id="update-button" value="IMPLEMENT">
-                (click the button to implement the specified plotting task)
+            <legend align="right" id="task-legend">
+                TASK <input type="button" id="task-button" value="(not selected)">
             </legend>
             <table>
                 <tr>
                     <td align="left">
+                        <input type="radio" name="data" id="textarea-write-radio">
+                        <label for="textarea-write-radio">Save current TEXTAREA to a file: </label></td>
+                </tr>
+                <tr>
+                    <td align="left">
                         <input type="radio" name="data" id="local-write-radio">
-                        <label for="local-write">Save current DATA to FILE: </label></td>
-                    <td align="left"><input type="text" id="local-write" name="local_write"/></td>
+                        <label for="local-write-radio">Save current data to a file: </label></td>
                 </tr>
                 <tr>
                     <td align="left">
                         <input type="radio" name="data" id="local-read-radio">
-                        <label for="local-read">DATA from local FILE: </label></td>
+                        <label for="local-read-radio">Plot data from a local file: </label></td>
                     <td align="left"><input type="file" id="local-read" name="local_read"/></td>
                 </tr>
                 <tr>
                     <td align="left">
                         <input type="radio" name="data" id="remote-read-radio">
-                        <label for="remote-read">DATA from remote URL: </label></td>
+                        <label for="remote-read-radio">Plot data from a remote URL: </label></td>
                     <td align="left"><input type="url" id="remote-read" name="remote_read" value="https://get.geojs.io/v1/ip/country.json"/></td>
                 </tr>
             </table>
         </fieldset></form>
             
-        <!-- <br/>   -->
         <fieldset>
-            <legend align="right">Text View<input type="checkbox" id="textview-plot" checked autocomplete="on"></legend>
-            <textarea id="textView"></textarea>
+            <legend align="right">TEXTAREA<input type="checkbox" id="textarea-checkbox" checked autocomplete="on"></legend>
+            <textarea id="textarea"></textarea>
         </fieldset>
         
-        <!-- <br/> -->
+        <!-- add title -->
         <fieldset>
-            <legend align="right">Table<input type="checkbox" id="table-plot" checked autocomplete="on"></legend>
+            <legend align="right">TABLE<input type="checkbox" id="table-checkbox" checked autocomplete="on"></legend>
             <table id="table"></table>
         </fieldset>
     </body>
